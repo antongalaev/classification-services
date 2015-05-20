@@ -5,10 +5,9 @@ package com.galaev.classification.model;
  *
  * @author Anton Galaev
  */
-public class Description {
+public class FormatDescription {
     private String name;
     private String description;
-    private String[] parameters;
 
     public String getName() {
         return name;
@@ -26,11 +25,4 @@ public class Description {
         this.description = description;
     }
 
-    public String[] getParameters() {
-        return parameters;
-    }
-
-    public void setParameters(String[] parameters) {
-        this.parameters = parameters;
-    }
 }
