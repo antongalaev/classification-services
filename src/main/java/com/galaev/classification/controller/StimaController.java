@@ -1,7 +1,6 @@
 package com.galaev.classification.controller;
 
 import com.galaev.classification.model.*;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,8 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
  *
  * @author Anton Galaev
  */
-@Controller
-public class JsonController {
+public class StimaController {
 
     @RequestMapping(value = "/{name}/title", method = RequestMethod.GET, produces = "text/plain")
     public @ResponseBody String getTitle(@PathVariable String name) {
