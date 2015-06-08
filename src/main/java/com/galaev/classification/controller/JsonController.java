@@ -2,11 +2,10 @@ package com.galaev.classification.controller;
 
 import com.galaev.classification.model.*;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.ArrayList;
 
 /**
  * This class handles client requests
@@ -233,57 +232,43 @@ public class JsonController {
 
 
     @RequestMapping(value = "{name}/input", method = RequestMethod.GET)
-    public @ResponseBody
-    FormatDescription getInputFormat(@PathVariable String name) {
-        FormatDescription description = new FormatDescription();
-        description.setName(name);
-        switch (name) {
-            case "quint":
-                description.setDescription("JSON");
-                break;
-            case "stima":
-                description.setDescription("JSON");
-                break;
-            default:
-                description.setDescription("No such method implemented here");
-                break;
-        }
-
-        return description;
+    public @ResponseBody MVContext getInputFormat(@PathVariable String name) {
+        MVContext context = new MVContext();
+        context.addValuesRow(new ArrayList<String>());
+        context.addValuesRow(new ArrayList<String>());
+        return context;
     }
 
     @RequestMapping(value = "{name}/output", method = RequestMethod.GET)
-    public @ResponseBody
-    FormatDescription getOutputFormat(@PathVariable String name) {
-        FormatDescription description = new FormatDescription();
-        description.setName(name);
-        switch (name) {
-            case "quint":
-                description.setDescription("JSON");
-                break;
-            case "stima":
-                description.setDescription("JSON");
-                break;
-            default:
-                description.setDescription("No such method implemented here");
-                break;
-        }
-
-        return description;
+    public @ResponseBody Result getOutputFormat(@PathVariable String name) {
+        Result result = new Result();
+        OutputClass first = new OutputClass();
+        first.setClassName("odd");
+        first.addObject(1);
+        first.addObject(3);
+        first.addEqualsCondition("ImmunCat", 2);
+        OutputClass second = new OutputClass();
+        second.setClassName("even");
+        second.addObject(2);
+        second.addObject(4);
+        second.addGreaterThanCondition("Age", 3.6);
+        result.addClass(first);
+        result.addClass(second);
+        return result;
     }
 
     @RequestMapping(value = "{name}/execute", method = RequestMethod.POST)
-    public @ResponseBody Result getResult(@PathVariable String name) {
+    public @ResponseBody Result getResult(@PathVariable String name, @RequestBody MVContext data) {
         Result result = new Result();
         switch (name) {
             case "quint":
-                result.setResult("Qualitative Interaction Trees");
+                ;
                 break;
             case "stima":
-                result.setResult("Simultaneous Threshold Interaction Modeling Algorithm");
+                ;
                 break;
             default:
-                result.setResult("No such method implemented here");
+                ;
                 break;
         }
         return result;
