@@ -1,6 +1,7 @@
 package com.galaev.classification.controller;
 
 import com.galaev.classification.model.*;
+import com.galaev.classification.solvers.rcaller.QuintRcallerSolver;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -25,6 +26,18 @@ public class JsonController {
                 return "Simultaneous Threshold Interaction Modeling Algorithm";
             default:
                 return "No such method implemented here";
+        }
+    }
+
+    @RequestMapping(value = "/{name}/test", method = RequestMethod.GET)
+    public @ResponseBody Result getTest(@PathVariable String name) {
+        switch (name) {
+            case "quint":
+                return new QuintRcallerSolver().solve();
+            case "stima":
+                return null;
+            default:
+                return null;
         }
     }
 
