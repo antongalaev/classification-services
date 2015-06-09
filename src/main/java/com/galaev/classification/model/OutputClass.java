@@ -84,4 +84,9 @@ public class OutputClass {
             started = true;
         }
     }
+
+    @Override
+    public String toString() {
+        return className + " " + description + " " + objects;
+    }
 }

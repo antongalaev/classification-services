@@ -31,4 +31,18 @@ public class Result {
         classes.add(outputClass);
         classesCount++;
     }
+
+    public OutputClass getClass(String className) {
+        for (OutputClass c : classes) {
+            if (c.getClassName().equals(className)) {
+                return c;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        return classesCount + " " + classes;
+    }
 }
