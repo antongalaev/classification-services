@@ -1,5 +1,6 @@
 package com.galaev.classification.solvers.renjin;
 
+import com.galaev.classification.model.MVContext;
 import com.galaev.classification.model.Result;
 import com.galaev.classification.solvers.Solver;
 import com.galaev.classification.util.RenjinFactory;
@@ -20,7 +21,7 @@ public abstract class RenjinSolver implements Solver {
     protected ScriptEngine engine;
 
     @Override
-    public Result solve() {
+    public Result solve(MVContext context) {
         engine = RenjinFactory.getRenjin();
         Result result;
 

@@ -1,5 +1,6 @@
 package com.galaev.classification.solvers.rcaller;
 
+import com.galaev.classification.model.MVContext;
 import com.galaev.classification.model.Result;
 
 import java.io.File;
@@ -13,7 +14,7 @@ import java.io.IOException;
 public class StimaRcallerSolver extends RcallerSolver {
 
     @Override
-    public Result doSolve() throws IOException {
+    public Result doSolve(MVContext context) throws IOException {
         code.R_require("stima");
 
         code.addRCode("all <- read.csv(\"/Users/anton/Yandex.Disk/Diploma/Project/all2006.csv\")");

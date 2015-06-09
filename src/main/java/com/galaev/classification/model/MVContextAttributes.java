@@ -33,6 +33,7 @@ public class MVContextAttributes {
 
     public void setList(List<String> list) {
         this.list = list;
+        count = list.size();
     }
 
     public List<String> getTypes() {
@@ -41,5 +42,10 @@ public class MVContextAttributes {
 
     public void setTypes(List<String> types) {
         this.types = types;
+    }
+
+    public void addAttribute(String attribute) {
+        list.add(attribute);
+        count++;
     }
 }

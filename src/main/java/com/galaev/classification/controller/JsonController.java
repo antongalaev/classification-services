@@ -2,11 +2,15 @@ package com.galaev.classification.controller;
 
 import com.galaev.classification.model.*;
 import com.galaev.classification.solvers.rcaller.QuintRcallerSolver;
+import com.galaev.classification.solvers.rcaller.StimaRcallerSolver;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * This class handles client requests
@@ -28,27 +32,6 @@ public class JsonController {
                 return "No such method implemented here";
         }
     }
-
-    @RequestMapping(value = "/{name}/test", method = RequestMethod.GET)
-    public @ResponseBody Result getTest(@PathVariable String name) {
-        switch (name) {
-            case "quint":
-                return new QuintRcallerSolver().solve();
-            case "stima":
-                return null;
-            default:
-                return null;
-        }
-    }
-
-    @RequestMapping(value = "{name}/generate", method = RequestMethod.GET)
-    public @ResponseBody MVContext getGenerate(@PathVariable String name) {
-        MVContext context = new MVContext();
-        context.addValuesRow(new ArrayList<String>());
-        context.addValuesRow(new ArrayList<String>());
-        return context;
-    }
-
 
     @RequestMapping(value = "/{name}/comment", method = RequestMethod.GET)
     public ModelAndView getComment(@PathVariable String name) {
@@ -281,18 +264,63 @@ public class JsonController {
 
     @RequestMapping(value = "{name}/execute", method = RequestMethod.POST)
     public @ResponseBody Result getResult(@PathVariable String name, @RequestBody MVContext data) {
-        Result result = new Result();
+
+        Result result;
         switch (name) {
             case "quint":
-                ;
+                QuintRcallerSolver quintSolver = new QuintRcallerSolver();
+                result = quintSolver.solve(data);
                 break;
             case "stima":
-                ;
+                StimaRcallerSolver stimaSolver = new StimaRcallerSolver();
+                result = stimaSolver.solve(data);
                 break;
             default:
-                ;
+                result = new Result();
                 break;
         }
         return result;
     }
+
+
+
+    @RequestMapping(value = "/{name}/test", method = RequestMethod.GET)
+    public @ResponseBody Result getTest(@PathVariable String name) {
+        switch (name) {
+            case "quint":
+                return new QuintRcallerSolver().solve(new MVContext());
+            case "stima":
+                return null;
+            default:
+                return null;
+        }
+    }
+
+    @RequestMapping(value = "{name}/generate", method = RequestMethod.GET)
+    public @ResponseBody MVContext getGenerate(@PathVariable String name) {
+        MVContext context = new MVContext();
+        MVContextAttributes attributes = context.getAttributes();
+        MVContextObjects objects = context.getObjects();
+        try (
+                BufferedReader br = new BufferedReader(new FileReader("/Users/anton/Yandex.Disk/Diploma/R/quint.csv"))
+        ) {
+            String line = br.readLine();
+            String[] attr = line.split(",");
+            for (String attribute : attr) {
+                attributes.addAttribute(attribute);
+            }
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                context.addValuesRow(new ArrayList<>(Arrays.asList(values)));
+            }
+            objects.setCount(context.getValues().size());
+        } catch (Exception ignored) { }
+        return context;
+    }
+
+    @RequestMapping(value = "{name}/testpost", method = RequestMethod.POST)
+    public @ResponseBody MVContext testpost(@PathVariable String name, @RequestBody MVContext data) {
+        return data;
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.galaev.classification.solvers.rcaller;
 
+import com.galaev.classification.model.MVContext;
 import com.galaev.classification.model.Result;
 import com.galaev.classification.solvers.Solver;
 import org.apache.logging.log4j.LogManager;
@@ -21,7 +22,7 @@ public abstract class RcallerSolver implements Solver {
     protected RCode code;
 
     @Override
-    public Result solve() {
+    public Result solve(MVContext context) {
         // creating an instance of RCaller and RCode class
         caller = new RCaller();
         code = new RCode();
@@ -31,7 +32,7 @@ public abstract class RcallerSolver implements Solver {
 
         Result result;
         try {
-            result = doSolve();
+            result = doSolve(context);
         } catch (IOException e) {
             logger.error("Error while running R scripts");
             throw new RuntimeException(e);
@@ -39,5 +40,5 @@ public abstract class RcallerSolver implements Solver {
         return result;
     }
 
-    public abstract Result doSolve() throws IOException;
+    public abstract Result doSolve(MVContext context) throws IOException;
 }

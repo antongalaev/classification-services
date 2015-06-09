@@ -1,10 +1,15 @@
 package com.galaev.classification.solvers.rcaller;
 
+import com.galaev.classification.model.MVContext;
 import com.galaev.classification.model.OutputClass;
 import com.galaev.classification.model.Result;
+import com.galaev.classification.util.StringUtils;
 import rcaller.RCaller;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,11 +23,23 @@ import java.util.Map;
 public class QuintRcallerSolver extends RcallerSolver {
 
     @Override
-    public Result doSolve() throws IOException {
+    public Result doSolve(MVContext context) throws IOException {
+
+        File inputFile = File.createTempFile("rcallerinput","");
+        try
+                (PrintWriter writer = new PrintWriter(new FileWriter(inputFile)))
+        {
+            writer.println(StringUtils.joinStrings(context.getAttributes().getList(), ","));
+
+            for (List<String> values : context.getValues()) {
+                writer.println(StringUtils.joinStrings(values, ","));
+            }
+        }
 
         code.R_require("quint");
 
-        code.addRCode("all <- read.csv(\"/Users/anton/Yandex.Disk/Diploma/R/quint.csv\")");
+        code.addRCode("all <- read.csv(\"" + inputFile.getAbsolutePath() + "\")");
+//        code.addRCode("all <- read.csv(\"/Users/anton/Yandex.Disk/Diploma/R/quint.csv\")");
 
         code.addRCode("formula1 <- Time~Rand1 | Sex+ImmunCat+CNS+Mediastinum+Age+Leuc+Leber+Milz");
         code.addRCode("control1 <- quint.control(maxl=5,Bootstrap=FALSE,dmin=0.1)");
@@ -88,8 +105,8 @@ public class QuintRcallerSolver extends RcallerSolver {
         return result;
     }
 
-    public static void main(String[] args) {
-        Result result = new QuintRcallerSolver().solve();
-        System.out.println(result);
-    }
+//    public static void main(String[] args) {
+//        Result result = new QuintRcallerSolver().solve();
+//        System.out.println(result);
+//    }
 }

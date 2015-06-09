@@ -1,5 +1,6 @@
 package com.galaev.classification.solvers;
 
+import com.galaev.classification.model.MVContext;
 import com.galaev.classification.model.Result;
 
 /**
@@ -8,5 +9,5 @@ import com.galaev.classification.model.Result;
  * @author Anton Galaev
  */
 public interface Solver {
-    Result solve();
+    Result solve(MVContext context);
 }
