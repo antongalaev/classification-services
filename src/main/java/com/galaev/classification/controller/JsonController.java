@@ -41,6 +41,15 @@ public class JsonController {
         }
     }
 
+    @RequestMapping(value = "{name}/generate", method = RequestMethod.GET)
+    public @ResponseBody MVContext getGenerate(@PathVariable String name) {
+        MVContext context = new MVContext();
+        context.addValuesRow(new ArrayList<String>());
+        context.addValuesRow(new ArrayList<String>());
+        return context;
+    }
+
+
     @RequestMapping(value = "/{name}/comment", method = RequestMethod.GET)
     public ModelAndView getComment(@PathVariable String name) {
         ModelAndView model = new ModelAndView("comment");

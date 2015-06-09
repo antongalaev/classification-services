@@ -6,7 +6,9 @@ import rcaller.RCaller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class
@@ -26,7 +28,7 @@ public class QuintRcallerSolver extends RcallerSolver {
         code.addRCode("control1 <- quint.control(maxl=5,Bootstrap=FALSE,dmin=0.1)");
         code.addRCode("quint1 <- quint(formula1, data=all,control=control1)");
 
-        code.addRCode("result <- list(nodes=quint1$li[,\"node\"]," +
+        code.addRCode("result <- list(nodes=quint1$li[,\"node\"], parents=quint1$si[,\"parentnode\"]," +
                 "childs=as.character(quint1$si[,\"childnodes\"]), splitvars= quint1$si[,\"splittingvar\"], " +
                 "splitpoints=quint1$si[,\"splitpoint\"], objects = as.numeric(quint1$nind))");
 
@@ -39,26 +41,37 @@ public class QuintRcallerSolver extends RcallerSolver {
         for (int i : caller.getParser().getAsIntArray("nodes")) {
             nodes.add(String.valueOf(i));
         }
-        System.out.println(caller.getParser().getXMLFileAsString());
+        String[] parents = caller.getParser().getAsStringArray("parents");
         String[] childnodes = caller.getParser().getAsStringArray("childs");
         String[] splitvars = caller.getParser().getAsStringArray("splitvars");
         String[] splitpoints = caller.getParser().getAsStringArray("splitpoints");
         int[] objects = caller.getParser().getAsIntArray("objects");
+
+        Map<String, OutputClass> allClasses = new HashMap<>();
         for (int i = 0; i < childnodes.length; ++i) {
             String[] classNames = childnodes[i].split(",");
+            OutputClass parentClass = allClasses.get(parents[i]);
 
             OutputClass output1 = new OutputClass();
-            if (nodes.contains(classNames[0])) {
-                output1.setClassName(classNames[0]);
-                output1.addLowerThanCondition(splitvars[i], splitpoints[i]);
-                result.addClass(output1);
+            output1.setClassName(classNames[0]);
+            output1.addLowerThanCondition(splitvars[i], splitpoints[i]);
+            if (parentClass != null) {
+                output1.addRawCondition(parentClass.extractRawDescription());
             }
+            allClasses.put(output1.getClassName(), output1);
 
             OutputClass output2 = new OutputClass();
-            if (nodes.contains(classNames[1])) {
-                output2.setClassName(classNames[1]);
-                output2.addGreaterThanCondition(splitvars[i], splitpoints[i]);
-                result.addClass(output2);
+            output2.setClassName(classNames[1]);
+            output2.addGreaterThanCondition(splitvars[i], splitpoints[i]);
+            if (parentClass != null) {
+                output2.addRawCondition(parentClass.extractRawDescription());
+            }
+            allClasses.put(output2.getClassName(), output2);
+        }
+
+        for (OutputClass outputClass : allClasses.values()) {
+            if (nodes.contains(outputClass.getClassName())) {
+                result.addClass(outputClass);
             }
         }
 

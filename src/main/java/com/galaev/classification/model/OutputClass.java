@@ -49,6 +49,14 @@ public class OutputClass {
                 .append(encloseInQuotes(value)).append("}");
     }
 
+    public void addRawCondition(String condition) {
+        description.append(",").append(condition);
+    }
+
+    public String extractRawDescription() {
+        return description.substring(2);
+    }
+
     public StringBuilder getDescription() {
         return description.append("}");
     }
